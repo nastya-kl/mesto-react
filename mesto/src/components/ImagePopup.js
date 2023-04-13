@@ -1,21 +1,25 @@
-import React from 'react';
+import React from "react";
 
-function ImagePopup() {
+function ImagePopup(props) {
+  const className = `popup popup_type_image popup_background_dark ${
+    props.isOpen ? "popup_opened" : ""
+  }`;
 
   return (
-  <div className="popup popup_type_image popup_background_dark">
-    <div className="popup__image-container">
-      <button
-        className="popup__close-icon"
-        type="button"
-        aria-label="Кнопка закрыть окно"
-      ></button>
-      <figure className="popup__figure">
-        <img className="popup__card-image" src="#" alt="" />
-        <figcaption className="popup__image-caption"></figcaption>
-      </figure>
+    <div className={className}>
+      <div className="popup__image-container">
+        <button
+          className="popup__close-icon"
+          type="button"
+          aria-label="Кнопка закрыть окно"
+          onClick={props.onClose}
+        ></button>
+        <figure className="popup__figure">
+          <img className="popup__card-image" src={props.card.link} alt="" />
+          <figcaption className="popup__image-caption"></figcaption>
+        </figure>
+      </div>
     </div>
-  </div>
   );
 }
 
