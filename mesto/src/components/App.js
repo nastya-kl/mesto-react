@@ -35,7 +35,6 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsConfirmPupopOpen(false);
-    setSelectedCard({});
   }
 
   return (
