@@ -1,16 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
+import CurrentUserContext from "./contexts/CurrentUserContext";
 
 function Card(props) {
-
+  const currentUser = React.useContext(CurrentUserContext);
   const likesNumber = props.card.likes.length;
+  const isOwn = props.card.owner._id === currentUser._id;
+  const isLiked = props.card.likes.some(i => i._id === currentUser._id);
+  const cardLikeButtonClassName = ( 
+    `element__like-button ${isLiked && 'element__like-button_active'}` 
+  );
 
   return (
     <li className="element">
-      <button
+      { 
+        isOwn && <button
         className="element__delete-button"
         type="button"
         aria-label="Кнопка удаления карточки"
-      ></button>
+        ></button>
+      }
       <div
         className="element__image"
         style={{ backgroundImage: `url(${props.card.link})` }}
@@ -20,7 +28,7 @@ function Card(props) {
         <h2 className="element__heading">{props.card.name}</h2>
         <div className="element__like-container">
           <button
-            className="element__like-button"
+            className={cardLikeButtonClassName}
             type="button"
             aria-label="Кнопка поставить лайк"
           ></button>

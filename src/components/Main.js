@@ -1,25 +1,9 @@
 import React from 'react';
-import api from '../utils/Api';
 import Card from "./Card";
+import CurrentUserContext from "./contexts/CurrentUserContext";
 
 function Main(props) {
-  const [userName, setUserName] = React.useState(null);
-  const [userDescription, setUserDescription] = React.useState(null);
-  const [userAvatar, setUserAvatar] = React.useState(null);
-  const [cards, setCards] = React.useState([]);
-
-  React.useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userData, cards]) => {
-          setUserAvatar(userData.avatar);
-          setUserName(userData.name);
-          setUserDescription(userData.about);
-          setCards(cards);
-      })
-      .catch((err) => {
-        console.log(`Ошибка: ${err}`);
-      })
-  }, []);
+  const currentUser = React.useContext(CurrentUserContext);
  
   return (
     <main className="main">
@@ -29,19 +13,19 @@ function Main(props) {
             <div
               className="profile__avatar"
               style={{
-                backgroundImage: `url(${userAvatar})`
+                backgroundImage: `url(${currentUser.avatar})`
               }}>
             </div>
           </div>
           <div className="profile__text">
-            <h1 className="profile__name">{userName}</h1>
+            <h1 className="profile__name">{currentUser.name}</h1>
             <button
               className="profile__edit-button"
               type="button"
               aria-label="Кнопка редактирования профиля"
               onClick={props.onEditProfile}
             ></button>
-            <p className="profile__description">{userDescription}</p>
+            <p className="profile__description">{currentUser.about}</p>
           </div>
         </div>
         <button
@@ -55,7 +39,7 @@ function Main(props) {
       <section className="elements" aria-label="Секция с блоками фотографий">
         <ul className="elements__container">
           {
-            cards.map(card => (
+            props.cards.map((card) => (
               <Card
                 key={card._id}
                 card={card}
