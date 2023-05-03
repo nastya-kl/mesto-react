@@ -6,6 +6,7 @@ import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
 import ImagePopup from "./ImagePopup";
 import CurrentUserContext from "./contexts/CurrentUserContext";
 
@@ -68,6 +69,17 @@ function App() {
       })
   }
 
+  function handleAddPlaceSubmit(card) {
+    api.addNewCard(card)
+      .then((data) => {
+        setCards([data, ...cards]); 
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      })
+  }
+
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
@@ -100,7 +112,9 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
+
         <Header />
+
         <Main
           onEditAvatar={handleEditAvatarClick}
           onEditProfile={handleEditProfileClick}
@@ -108,51 +122,41 @@ function App() {
           onCardClick={handleCardClick}
           onCardLike={handleCardLike}
           onCardDelete={handleCardDelete}
-          cards={cards}/>
+          cards={cards}
+        />
+
         <Footer />
 
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
-          /> 
+        /> 
 
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
-          /> 
+        /> 
 
-        <PopupWithForm title="Новое место" name="add" buttonText="Создать" isOpen={isAddPlacePopupOpen} onClose={closeAllPopups}>
-          <label className="popup__label">
-            <input
-              className="popup__input popup__input_type_image-name"
-              id="image-name-imput"
-              type="text"
-              name="name"
-              placeholder="Название"
-              minLength="2"
-              maxLength="30"
-              required
-            />
-            <span className="image-name-imput-error popup__input-error"></span>
-          </label>
-          <label className="popup__label">
-            <input
-              className="popup__input popup__input_type_image-link"
-              id="image-url-imput"
-              type="url"
-              name="link"
-              placeholder="Ссылка на картинку"
-              required
-            />
-            <span className="image-url-imput-error popup__input-error"></span>
-          </label>
-        </PopupWithForm>
+        <AddPlacePopup
+          isOpen={isAddPlacePopupOpen}
+          onClose={closeAllPopups}
+          onAddPlace={handleAddPlaceSubmit}
+        /> 
 
-        <PopupWithForm title="Вы уверены?" name="delete" buttonText="Да"></PopupWithForm>
+        <PopupWithForm
+          title="Вы уверены?"
+          name="delete"
+          buttonText="Да"
+        />
 
-        <ImagePopup card={selectedCard} isOpen={isConfirmPupopOpen} onClose={closeAllPopups}/>
+        <ImagePopup
+          card={selectedCard}
+          isOpen={isConfirmPupopOpen}
+          onClose={closeAllPopups}
+        />
+        
       </div>
     </CurrentUserContext.Provider>
   );

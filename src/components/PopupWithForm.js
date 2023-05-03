@@ -4,7 +4,7 @@ function PopupWithForm(props) {
   const className = `popup popup_type_${props.name} ${props.isOpen ? 'popup_opened' : ''}`;
 
   return (
-    <div className={className}>
+    <div className={className} onClick={(e) => e.target.classList.contains('popup') && props.onClose()}>
       <div className="popup__container">
         <button
           className="popup__close-icon"
