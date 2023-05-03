@@ -6,7 +6,7 @@ function ImagePopup(props) {
   }`;
 
   return (
-    <div className={className}>
+    <div className={className} onClick={(e) => e.target.classList.contains('popup') && props.onClose()}>
       <div className="popup__image-container">
         <button
           className="popup__close-icon"

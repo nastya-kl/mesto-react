@@ -8,16 +8,19 @@ import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import ImagePopup from "./ImagePopup";
-import CurrentUserContext from "./contexts/CurrentUserContext";
+import ConfirmDeletePopup from "./ConfirmDeletePopup";
+import CurrentUserContext from "../contexts/CurrentUserContext";
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
+  const [isImagePupopOpen, setIsImagePupopOpen] = React.useState(false);
   const [isConfirmPupopOpen, setIsConfirmPupopOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState({});
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     Promise.all([api.getUserInfo(), api.getInitialCards()])
@@ -44,10 +47,16 @@ function App() {
 
   function handleCardClick(data) {
     setSelectedCard(data);
+    setIsImagePupopOpen(true);
+  }
+
+  function handleConfirmPopupclick(data) {
+    setSelectedCard(data);
     setIsConfirmPupopOpen(true);
   }
 
   function handleUpdateUser(userInfo) {
+    setIsLoading(true)
     api.changeUserInfo(userInfo)
       .then((data) => {
         setCurrentUser(data);
@@ -56,9 +65,11 @@ function App() {
       .catch((err) => {
         console.log(`Ошибка: ${err}`);
       })
+      .finally(() => setIsLoading(false))
   }
 
   function handleUpdateAvatar(userInfo) {
+    setIsLoading(true)
     api.changeUserAvatar(userInfo)
       .then((data) => {
         setCurrentUser(data);
@@ -67,9 +78,11 @@ function App() {
       .catch((err) => {
         console.log(`Ошибка: ${err}`);
       })
+      .finally(() => setIsLoading(false))
   }
 
   function handleAddPlaceSubmit(card) {
+    setIsLoading(true)
     api.addNewCard(card)
       .then((data) => {
         setCards([data, ...cards]); 
@@ -78,12 +91,14 @@ function App() {
       .catch((err) => {
         console.log(`Ошибка: ${err}`);
       })
+      .finally(() => setIsLoading(false))
   }
 
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
+    setIsImagePupopOpen(false);
     setIsConfirmPupopOpen(false);
   }
 
@@ -103,6 +118,7 @@ function App() {
     api.deleteCard(card._id)
       .then(() => {
         setCards(cards => cards.filter((c) => c._id !== card._id));
+        closeAllPopups();
       })
       .catch((err) => {
         console.log(`Ошибка: ${err}`);
@@ -121,7 +137,7 @@ function App() {
           onAddPlace={handleAddPlaceClick}
           onCardClick={handleCardClick}
           onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
+          onCardDelete={handleConfirmPopupclick}
           cards={cards}
         />
 
@@ -131,30 +147,34 @@ function App() {
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
+          isLoading={isLoading}
         /> 
 
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
+          isLoading={isLoading}
         /> 
 
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
           onAddPlace={handleAddPlaceSubmit}
+          isLoading={isLoading}
         /> 
-
-        <PopupWithForm
-          title="Вы уверены?"
-          name="delete"
-          buttonText="Да"
-        />
 
         <ImagePopup
           card={selectedCard}
+          isOpen={isImagePupopOpen}
+          onClose={closeAllPopups}
+        />
+
+        <ConfirmDeletePopup
           isOpen={isConfirmPupopOpen}
           onClose={closeAllPopups}
+          onDelete={handleCardDelete}
+          card={selectedCard}
         />
         
       </div>

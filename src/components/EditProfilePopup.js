@@ -1,5 +1,5 @@
 import React from "react";
-import CurrentUserContext from "./contexts/CurrentUserContext";
+import CurrentUserContext from "../contexts/CurrentUserContext";
 import PopupWithForm from "./PopupWithForm";
 
 function EditProfilePopup(props) {
@@ -34,7 +34,7 @@ function EditProfilePopup(props) {
     <PopupWithForm
       title="Редактировать профиль"
       name="info"
-      buttonText="Сохранить"
+      buttonText={props.isLoading ? 'Сохранение...' : 'Сохранить'}
       isOpen={props.isOpen}
       onClose={props.onClose}
       onSubmit={handleSubmit}
