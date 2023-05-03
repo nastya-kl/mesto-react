@@ -50,7 +50,7 @@ class Api {
       headers: this.headers,
       body: JSON.stringify({
         name: data.name,
-        about: data.job
+        about: data.about
       })
     })
       .then(this._checkResponse);

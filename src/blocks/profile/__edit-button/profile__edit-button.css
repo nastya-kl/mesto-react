@@ -8,6 +8,7 @@
   height: 24px;
   box-sizing: border-box;
   margin-top: 15px;
+  margin-right: 20px;
   transition: opacity .5s;
 }
 

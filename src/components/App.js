@@ -4,6 +4,7 @@ import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
+import EditProfilePopup from "./EditProfilePopup";
 import ImagePopup from "./ImagePopup";
 import CurrentUserContext from "./contexts/CurrentUserContext";
 
@@ -44,6 +45,17 @@ function App() {
     setIsConfirmPupopOpen(true);
   }
 
+  function handleUpdateUser(userInfo) {
+    api.changeUserInfo(userInfo)
+      .then((data) => {
+        setCurrentUser(data);
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      })
+  }
+
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
@@ -57,13 +69,19 @@ function App() {
     api.changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
       setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
-      });
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      })
   }
 
   function handleCardDelete(card) {
     api.deleteCard(card._id)
       .then(() => {
         setCards(cards => cards.filter((c) => c._id !== card._id));
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
       })
   }
 
@@ -81,6 +99,12 @@ function App() {
           cards={cards}/>
         <Footer />
 
+        <EditProfilePopup
+          isOpen={isEditProfilePopupOpen}
+          onClose={closeAllPopups}
+          onUpdateUser={handleUpdateUser}
+          /> 
+
         <PopupWithForm title="Обновить аватар" name="avatar" buttonText="Сохранить" isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups}>
           <label className="popup__label">
             <input
@@ -92,35 +116,6 @@ function App() {
               required
             />
             <span className="avatar-url-imput-error popup__input-error"></span>
-          </label>
-        </PopupWithForm>
-
-        <PopupWithForm title="Редактировать профиль" name="info" buttonText="Сохранить" isOpen={isEditProfilePopupOpen} onClose={closeAllPopups}>
-          <label className="popup__label">
-            <input
-              className="popup__input popup__input_type_name"
-              id="profile-name-input"
-              type="text"
-              name="name"
-              placeholder="Введите имя"
-              minLength="2"
-              maxLength="40"
-              required
-            />
-            <span className="profile-name-input-error popup__input-error"></span>
-          </label>
-          <label className="popup__label">
-            <input
-              className="popup__input popup__input_type_job"
-              id="profile-job-input"
-              type="text"
-              name="job"
-              placeholder="Введите описание"
-              minLength="2"
-              maxLength="200"
-              required
-            />
-            <span className="profile-job-input-error popup__input-error"></span>
           </label>
         </PopupWithForm>
 
