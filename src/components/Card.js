@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import CurrentUserContext from "./contexts/CurrentUserContext";
 
 function Card(props) {
@@ -7,7 +7,7 @@ function Card(props) {
   const isOwn = props.card.owner._id === currentUser._id;
   const isLiked = props.card.likes.some(i => i._id === currentUser._id);
   const cardLikeButtonClassName = ( 
-    `element__like-button ${isLiked && 'element__like-button_active'}` 
+    `element__like-button ${isLiked && 'element__like-button_active'}`
   );
 
   return (
@@ -29,6 +29,7 @@ function Card(props) {
         <div className="element__like-container">
           <button
             className={cardLikeButtonClassName}
+            onClick={props.handleLikeClick}
             type="button"
             aria-label="Кнопка поставить лайк"
           ></button>

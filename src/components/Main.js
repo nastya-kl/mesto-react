@@ -44,6 +44,7 @@ function Main(props) {
                 key={card._id}
                 card={card}
                 handleClick={() => props.onCardClick(card)}
+                handleLikeClick={() => props.onCardLike(card)}
               />
             ))
           }
