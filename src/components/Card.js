@@ -17,6 +17,7 @@ function Card(props) {
         className="element__delete-button"
         type="button"
         aria-label="Кнопка удаления карточки"
+        onClick={props.handleDeleteClick}
         ></button>
       }
       <div
