@@ -5,6 +5,7 @@ import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
 import ImagePopup from "./ImagePopup";
 import CurrentUserContext from "./contexts/CurrentUserContext";
 
@@ -47,6 +48,17 @@ function App() {
 
   function handleUpdateUser(userInfo) {
     api.changeUserInfo(userInfo)
+      .then((data) => {
+        setCurrentUser(data);
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      })
+  }
+
+  function handleUpdateAvatar(userInfo) {
+    api.changeUserAvatar(userInfo)
       .then((data) => {
         setCurrentUser(data);
         closeAllPopups();
@@ -105,19 +117,11 @@ function App() {
           onUpdateUser={handleUpdateUser}
           /> 
 
-        <PopupWithForm title="Обновить аватар" name="avatar" buttonText="Сохранить" isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups}>
-          <label className="popup__label">
-            <input
-              className="popup__input popup__input_type_avatar"
-              id="avatar-url-imput"
-              type="url"
-              name="link"
-              placeholder="Ссылка на картинку"
-              required
-            />
-            <span className="avatar-url-imput-error popup__input-error"></span>
-          </label>
-        </PopupWithForm>
+        <EditAvatarPopup
+          isOpen={isEditAvatarPopupOpen}
+          onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateAvatar}
+          /> 
 
         <PopupWithForm title="Новое место" name="add" buttonText="Создать" isOpen={isAddPlacePopupOpen} onClose={closeAllPopups}>
           <label className="popup__label">
